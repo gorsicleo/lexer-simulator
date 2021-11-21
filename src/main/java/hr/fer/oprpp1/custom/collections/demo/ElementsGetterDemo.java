@@ -10,8 +10,9 @@ public class ElementsGetterDemo {
 		col.add("Ivo");
 		col.add("Ana");
 		col.add("Jasna");
+		col.add("Petar");
 		ElementsGetter getter = col.createElementsGetter();
-		getter.getNextElement();
+		System.out.println(getter.getNextElement());
 		getter.processRemaining(System.out::println);
 	}
 }

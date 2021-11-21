@@ -27,7 +27,7 @@ public class ArrayIndexedCollection implements List {
 		public boolean hasNextElement() {
 			checkForStructuralModification();
 			
-			return lastDeliveredObjectIndex<collection.size-1;
+			return lastDeliveredObjectIndex<collection.occupied-1;
 		}
 
 		@Override
@@ -52,6 +52,9 @@ public class ArrayIndexedCollection implements List {
 	private long modificationCount = 0;
 
 	/** Keeps count of elements that are currently in collection. */
+	private int occupied;
+	
+	/** Size of internal array*/
 	private int size;
 
 	/** Used array for collection memory */
@@ -69,6 +72,7 @@ public class ArrayIndexedCollection implements List {
 		checkValidity(initialCapacity, collection);
 		initializeSize(initialCapacity, collection);
 		elements = new Object[size];
+		occupied = collection.size();
 		copyCollectionToElements(collection);
 	}
 
@@ -81,6 +85,7 @@ public class ArrayIndexedCollection implements List {
 	public ArrayIndexedCollection(int initialCapacity) {
 		checkValidityInitialCapacity(initialCapacity);
 		size = initialCapacity;
+		occupied = 0;
 		elements = new Object[size];
 	}
 
@@ -241,6 +246,7 @@ public class ArrayIndexedCollection implements List {
 	public void add(Object value) {
 		boolean added = false;
 		checkIfValueIsNull(value);
+		occupied++;
 		for (int i = 0; i < size; i++) {
 			if (elements[i] == null) {
 				elements[i] = value;
@@ -283,7 +289,7 @@ public class ArrayIndexedCollection implements List {
 	 */
 	@Override
 	public int size() {
-		return size;
+		return occupied;
 	}
 
 	/**
@@ -293,6 +299,7 @@ public class ArrayIndexedCollection implements List {
 	 *
 	 */
 	public void clear() {
+		occupied = 0;
 		for (int i = 0; i < size; i++) {
 			elements[i] = null;
 		}
@@ -312,6 +319,7 @@ public class ArrayIndexedCollection implements List {
 	public void insert(Object value, int position) {
 		checkIndexOutOfBounds(position);
 		checkIfValueIsNull(value);
+		occupied++;
 		if (elements[size - 1] == null) {
 			shiftElelemnts(position);
 		} else {
@@ -347,6 +355,7 @@ public class ArrayIndexedCollection implements List {
 	 */
 	public void remove(int index) {
 		checkIndexOutOfBounds(index);
+		occupied--;
 		for (int i = index; i < size - 1; i++) {
 			elements[i] = elements[i + 1];
 		}
@@ -372,6 +381,7 @@ public class ArrayIndexedCollection implements List {
 			if (elements[i].equals(value)) {
 				remove(i);
 				isremoved = true;
+				occupied--;
 			}
 		}
 		return isremoved;
